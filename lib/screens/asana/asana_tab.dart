@@ -37,7 +37,7 @@ class _AsanaTabState extends State<AsanaTab> {
     try {
       final supabase = Supabase.instance.client;
       final catRes = await supabase.from('asanacategory').select('posture_type_ko, movement_type_ko, category_name_en, category_name_ko');
-      final asanaRes = await supabase.from('asanas').select('sanskrit_name_kr, sanskrit_name_en, category_name_en, level');
+      final asanaRes = await supabase.from('asanas').select('sanskrit_name_kr, sanskrit_name_en, category_name_en, level, image_number');
       setState(() {
         _categories = List<Map<String, dynamic>>.from(catRes);
         _asanas = List<Map<String, dynamic>>.from(asanaRes);
@@ -166,7 +166,10 @@ class _AsanaTabState extends State<AsanaTab> {
                       itemCount: filteredAsanas.length,
                       itemBuilder: (context, idx) {
                         final asana = filteredAsanas[idx];
-                        final imagePath = 'assets/asana/${asana['sanskrit_name_en']}.png';
+                        final imageNumbers = (asana['image_number'] ?? 'default').split(',');
+                        final firstImageNumber = imageNumbers.first.trim();
+                        final imageUrl = 'https://ueoytttgsjquapkaerwk.supabase.co/storage/v1/object/public/asanas-images/$firstImageNumber.jpg';
+                        print('아사나 이미지 URL: $imageUrl');
                         return GestureDetector(
                           onTap: () {
                             // TODO: 상세화면 이동
@@ -179,10 +182,10 @@ class _AsanaTabState extends State<AsanaTab> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  // 썸네일 이미지
+                                  // 썸네일 네트워크 이미지 (첫 번째 이미지)
                                   Expanded(
-                                    child: Image.asset(
-                                      imagePath,
+                                    child: Image.network(
+                                      imageUrl,
                                       fit: BoxFit.contain,
                                       errorBuilder: (context, error, stackTrace) =>
                                           const Icon(Icons.image_not_supported, size: 64, color: Colors.grey),

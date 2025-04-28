@@ -156,17 +156,61 @@ class _AsanaTabState extends State<AsanaTab> {
             Expanded(
               child: filteredAsanas.isEmpty
                   ? const Center(child: Text('해당 조건의 아사나가 없습니다.'))
-                  : ListView.separated(
+                  : GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.75,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                      ),
                       itemCount: filteredAsanas.length,
-                      separatorBuilder: (_, __) => const Divider(),
                       itemBuilder: (context, idx) {
                         final asana = filteredAsanas[idx];
-                        return ListTile(
-                          title: Text('${asana['sanskrit_name_kr']} (${asana['sanskrit_name_en']})'),
-                          subtitle: Text('레벨 ${asana['level']}'),
+                        final imagePath = 'assets/asana/${asana['sanskrit_name_en']}.png';
+                        return GestureDetector(
                           onTap: () {
-                            // TODO: 아사나 상세페이지로 이동
+                            // TODO: 상세화면 이동
                           },
+                          child: Card(
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // 썸네일 이미지
+                                  Expanded(
+                                    child: Image.asset(
+                                      imagePath,
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (context, error, stackTrace) =>
+                                          const Icon(Icons.image_not_supported, size: 64, color: Colors.grey),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    asana['sanskrit_name_kr'] ?? '',
+                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  Text(
+                                    asana['sanskrit_name_en'] ?? '',
+                                    style: const TextStyle(fontSize: 13, color: Colors.grey),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: List.generate(
+                                      asana['level'] ?? 1,
+                                      (i) => const Icon(Icons.star, size: 16, color: Colors.amber),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         );
                       },
                     ),

@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'proficiency_level.dart';
+import '../utils/proficiency_level.dart';
 
 @immutable
 class AsanaModel {
@@ -15,6 +15,7 @@ class AsanaModel {
   final String story;
   final int duration;
   final bool isFavorite;
+  final String imageNumber;
 
   const AsanaModel({
     required this.id,
@@ -29,6 +30,7 @@ class AsanaModel {
     required this.story,
     required this.duration,
     this.isFavorite = false,
+    required this.imageNumber,
   });
 
   AsanaModel copyWith({
@@ -44,6 +46,7 @@ class AsanaModel {
     String? story,
     int? duration,
     bool? isFavorite,
+    String? imageNumber,
   }) {
     return AsanaModel(
       id: id ?? this.id,
@@ -58,6 +61,7 @@ class AsanaModel {
       story: story ?? this.story,
       duration: duration ?? this.duration,
       isFavorite: isFavorite ?? this.isFavorite,
+      imageNumber: imageNumber ?? this.imageNumber,
     );
   }
 
@@ -75,6 +79,7 @@ class AsanaModel {
       'story': story,
       'duration': duration,
       'isFavorite': isFavorite,
+      'image_number': imageNumber,
     };
   }
 
@@ -94,6 +99,7 @@ class AsanaModel {
       story: json['story'] as String,
       duration: json['duration'] as int,
       isFavorite: json['isFavorite'] as bool? ?? false,
+      imageNumber: json['image_number'] as String? ?? '001',
     );
   }
 
@@ -112,7 +118,8 @@ class AsanaModel {
         other.effects == effects &&
         other.story == story &&
         other.duration == duration &&
-        other.isFavorite == isFavorite;
+        other.isFavorite == isFavorite &&
+        other.imageNumber == imageNumber;
   }
 
   @override
@@ -130,6 +137,7 @@ class AsanaModel {
       story,
       duration,
       isFavorite,
+      imageNumber,
     );
   }
 } 

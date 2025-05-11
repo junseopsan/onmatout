@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/asana_viewmodel.dart';
 import 'asana_detail_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
 
 class AsanaListScreen extends StatefulWidget {
   const AsanaListScreen({super.key});
@@ -45,8 +47,32 @@ class _AsanaListScreenState extends State<AsanaListScreen> {
             itemBuilder: (context, index) {
               final asana = viewModel.filteredAsanas[index];
               return ListTile(
+                key: ValueKey(asana.id),
                 leading: CircleAvatar(
-                  backgroundImage: NetworkImage(asana.imageUrl),
+                  backgroundColor: Colors.grey[200],
+                  radius: 24,
+                  child: ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: asana.imageUrl,
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        period: Duration(milliseconds: 1800),
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => const Icon(Icons.image_not_supported, size: 24, color: Colors.grey),
+                    ),
+                  ),
                 ),
                 title: Text(asana.name),
                 subtitle: Text(asana.category),
@@ -60,7 +86,11 @@ class _AsanaListScreenState extends State<AsanaListScreen> {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AsanaDetailScreen(asana: asana),
+                    builder: (context) => AsanaDetailScreen(
+                      asana: asana,
+                      asanaId: asana.id,
+                      asanaImageNumber: asana.imageNumber,
+                    ),
                   ),
                 ),
               );

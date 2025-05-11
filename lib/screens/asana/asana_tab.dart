@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:onmatout/models/asana_model.dart';
+import 'package:onmatout/screens/asana/asana_detail_screen.dart';
+import 'package:onmatout/utils/proficiency_level.dart';
+import '../../models/asana_model.dart';
 
 class AsanaTab extends StatefulWidget {
   const AsanaTab({super.key});
@@ -15,17 +19,31 @@ class _AsanaTabState extends State<AsanaTab> {
   String? _selectedMovement = '전체';
   bool _loading = true;
 
-  // 허용된 자세 유형 목록
-  final List<String> _allowedPostures = [
-    '전체',
-    '누운',
-    '서서',
-    '앉은',
-    '암밸런스',
-    '도립',
-    '몸통',
-    '네발'
-  ];
+  // 자세 유형 목록 (데이터 로드 후 업데이트)
+  List<String> _postures = ['전체'];
+
+  // 카테고리 영문-한글 매핑 테이블
+  static const Map<String, String> categoryNameKoMap = {
+    'Standing Neutral Pose': '선 중립 자세',
+    'Standing Side bend Pose': '선 기울기 자세',
+    'Seated Inversion Pose': '앉은 역자세',
+    'Standing Inversion Pose': '선 역자세',
+    'Standing Backbend Pose': '선 후굴 자세',
+    'Seated Forward bend Pose': '앉은 전굴 자세',
+    'Supine Forward bend Pose': '누운 전굴 자세',
+    'Supine Side bend Pose': '누운 기울기 자세',
+    'Standing Compression Pose': '선 응축 자세',
+    'Standing Twist Pose': '선 비틀기 자세',
+    'Seated Side bend Pose': '앉은 기울기 자세',
+    'Seated Compression Pose': '앉은 응축 자세',
+    'Supine Twist Pose': '누운 비틀기 자세',
+    'Seated Twist Pose': '앉은 비틀기 자세',
+    'Supine Backbend Pose': '누운 후굴 자세',
+    'Seated Backbend Pose': '앉은 후굴 자세',
+    'Supine Compression Pose': '누운 응축 자세',
+    'Standing Forward bend Pose': '선 전굴 자세',
+    'Supine Inversion Pose': '누운 역자세',
+  };
 
   @override
   void initState() {
@@ -37,13 +55,25 @@ class _AsanaTabState extends State<AsanaTab> {
     try {
       final supabase = Supabase.instance.client;
       final catRes = await supabase.from('asanacategory').select('posture_type_ko, movement_type_ko, category_name_en, category_name_ko');
-      final asanaRes = await supabase.from('asanas').select('sanskrit_name_kr, sanskrit_name_en, category_name_en, level, image_number');
+      final asanaRes = await supabase.from('asanas').select('id, sanskrit_name_kr, sanskrit_name_en, category_name_en, level, image_number, effect, story');
+      
+      print('카테고리 데이터: $catRes');
+      
       setState(() {
         _categories = List<Map<String, dynamic>>.from(catRes);
         _asanas = List<Map<String, dynamic>>.from(asanaRes);
+        // 자세 유형 목록 업데이트 (중복 제거 및 정렬)
+        final uniquePostures = _categories
+            .map((c) => c['posture_type_ko'] as String)
+            .toSet()
+            .toList()
+          ..sort();
+        _postures = ['전체', ...uniquePostures];
+        print('자세 유형 목록: $_postures');
         _loading = false;
       });
     } catch (e) {
+      print('데이터 로드 에러: $e');
       setState(() {
         _loading = false;
       });
@@ -64,17 +94,17 @@ class _AsanaTabState extends State<AsanaTab> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    // 1차 필터: 허용된 자세 유형만 표시
-    final postures = _allowedPostures;
+    // 1차 필터: 자세 유형
+    final postures = _postures;
 
-    // 2차 필터: 동작 유형 (누운/서서/앉은 자세에 대해서만 표시)
+    // 2차 필터: 동작 유형 (누운/선/앉은 자세에 대해서만 표시)
     final filteredMovements = () {
       if (_selectedPosture == null || _selectedPosture == '전체') {
         return <String>[];
       }
       
-      // 누운/서서/앉은 자세에 대해서만 동작 유형 표시
-      if (['누운', '서서', '앉은'].contains(_selectedPosture)) {
+      // 누운/선/앉은 자세에 대해서만 동작 유형 표시
+      if (['누운', '선', '앉은'].contains(_selectedPosture)) {
         return _categories
             .where((c) => c['posture_type_ko'] == _selectedPosture)
             .map((c) => c['movement_type_ko'] as String)
@@ -133,8 +163,8 @@ class _AsanaTabState extends State<AsanaTab> {
               }).toList(),
             ),
             const SizedBox(height: 16),
-            // 2차 필터: 동작 유형 (누운/서서/앉은 자세에 대해서만 표시)
-            if (['누운', '서서', '앉은'].contains(_selectedPosture)) ...[
+            // 2차 필터: 동작 유형 (누운/선/앉은 자세에 대해서만 표시)
+            if (['누운', '선', '앉은'].contains(_selectedPosture)) ...[
               const Text('동작 유형', style: TextStyle(fontWeight: FontWeight.bold)),
               Wrap(
                 spacing: 8,
@@ -166,13 +196,35 @@ class _AsanaTabState extends State<AsanaTab> {
                       itemCount: filteredAsanas.length,
                       itemBuilder: (context, idx) {
                         final asana = filteredAsanas[idx];
-                        final imageNumbers = (asana['image_number'] ?? 'default').split(',');
-                        final firstImageNumber = imageNumbers.first.trim();
-                        final imageUrl = 'https://ueoytttgsjquapkaerwk.supabase.co/storage/v1/object/public/asanas-images/$firstImageNumber.jpg';
-                        print('아사나 이미지 URL: $imageUrl');
+                        final asanaId = (asana['id'] ?? '001').toString().padLeft(3, '0');
+                        final asanaImageNumber = (asana['image_number'] ?? '001').toString().padLeft(3, '0');
+                        final thumbnailUrl = 'https://ueoytttgsjquapkaerwk.supabase.co/storage/v1/object/public/asanas-images/thumbnail/$asanaImageNumber.jpg';
                         return GestureDetector(
                           onTap: () {
-                            // TODO: 상세화면 이동
+                            final asanaModel = AsanaModel(
+                              id: asana['id'] ?? '',
+                              name: asana['sanskrit_name_en'] ?? '',
+                              sanskritNameKr: asana['sanskrit_name_kr'] ?? '',
+                              sanskritName: asana['sanskrit_name_en'] ?? '',
+                              category: _AsanaTabState.categoryNameKoMap[asana['category_name_en']] ?? asana['category_name_ko'] ?? asana['category_name_en'],
+                              difficulty: ProficiencyLevel.fromInt(int.tryParse(asana['level']?.toString() ?? '0')),
+                              imageUrl: thumbnailUrl,
+                              effects: asana['effect'] ?? '',
+                              description: asana['sanskrit_name_kr'] ?? '',
+                              story: asana['story'] ?? '',
+                              duration: 0,
+                              imageNumber: asanaImageNumber,
+                            );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => AsanaDetailScreen(
+                                  asana: asanaModel,
+                                  asanaId: asanaId,
+                                  asanaImageNumber: asanaImageNumber,
+                                ),
+                              ),
+                            );
                           },
                           child: Card(
                             elevation: 2,
@@ -182,10 +234,10 @@ class _AsanaTabState extends State<AsanaTab> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  // 썸네일 네트워크 이미지 (첫 번째 이미지)
+                                  // 썸네일 네트워크 이미지 (thumbnail 폴더)
                                   Expanded(
                                     child: Image.network(
-                                      imageUrl,
+                                      thumbnailUrl,
                                       fit: BoxFit.contain,
                                       errorBuilder: (context, error, stackTrace) =>
                                           const Icon(Icons.image_not_supported, size: 64, color: Colors.grey),
@@ -206,7 +258,7 @@ class _AsanaTabState extends State<AsanaTab> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: List.generate(
-                                      asana['level'] ?? 1,
+                                      int.tryParse(asana['level']?.toString() ?? '1') ?? 1,
                                       (i) => const Icon(Icons.star, size: 16, color: Colors.amber),
                                     ),
                                   ),

@@ -67,7 +67,11 @@ class RoutineDetailScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AsanaDetailScreen(asana: asana),
+                          builder: (context) => AsanaDetailScreen(
+                            asana: asana,
+                            asanaId: asana.id,
+                            asanaImageNumber: asana.imageNumber,
+                          ),
                         ),
                       );
                     }

@@ -6,7 +6,7 @@ class JournalTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Center(child: Text('수련일지 탭')), // 추후 실제 저널/루틴 목록으로 대체
+      body: Center(child: Text('수련 탭')), // 추후 실제 저널/루틴 목록으로 대체
     );
   }
 } 

@@ -33,7 +33,7 @@ class _MainTabScreenState extends State<MainTabScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.book),
-            label: '수련일지',
+            label: '수련',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.class_),

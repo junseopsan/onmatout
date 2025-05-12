@@ -18,6 +18,7 @@ class _AsanaTabState extends State<AsanaTab> {
   String? _selectedPosture = '전체';
   String? _selectedMovement = '전체';
   bool _loading = true;
+  String _searchQuery = '';
 
   // 자세 유형 목록 (데이터 로드 후 업데이트)
   List<String> _postures = ['전체'];
@@ -118,24 +119,32 @@ class _AsanaTabState extends State<AsanaTab> {
 
     // 아사나 필터링
     final filteredAsanas = () {
+      List<Map<String, dynamic>> result;
       if (_selectedPosture == null || _selectedPosture == '전체') {
-        return _asanas;
-      }
-      if (_selectedMovement == null || _selectedMovement == '전체') {
+        result = _asanas;
+      } else if (_selectedMovement == null || _selectedMovement == '전체') {
         final categoryEns = _categories
             .where((c) => c['posture_type_ko'] == _selectedPosture)
             .map((c) => c['category_name_en'])
             .toSet();
-        return _asanas.where((a) => categoryEns.contains(a['category_name_en'])).toList();
+        result = _asanas.where((a) => categoryEns.contains(a['category_name_en'])).toList();
+      } else {
+        final categoryEns = _categories
+            .where((c) =>
+                c['posture_type_ko'] == _selectedPosture &&
+                c['movement_type_ko'] == _selectedMovement)
+            .map((c) => c['category_name_en'])
+            .toSet();
+        result = _asanas.where((a) => categoryEns.contains(a['category_name_en'])).toList();
       }
-      // posture+movement 모두 선택
-      final categoryEns = _categories
-          .where((c) =>
-              c['posture_type_ko'] == _selectedPosture &&
-              c['movement_type_ko'] == _selectedMovement)
-          .map((c) => c['category_name_en'])
-          .toSet();
-      return _asanas.where((a) => categoryEns.contains(a['category_name_en'])).toList();
+      if (_searchQuery.isNotEmpty) {
+        final q = _searchQuery.toLowerCase();
+        result = result.where((a) =>
+          (a['sanskrit_name_kr'] ?? '').toString().toLowerCase().contains(q) ||
+          (a['sanskrit_name_en'] ?? '').toString().toLowerCase().contains(q)
+        ).toList();
+      }
+      return result;
     }();
 
     return Scaffold(
@@ -145,6 +154,23 @@ class _AsanaTabState extends State<AsanaTab> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 검색 입력창
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: '아사나 이름(한글/영어) 검색',
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value.trim();
+                  });
+                },
+              ),
+            ),
             // 1차 필터: 자세 유형
             const Text('자세 유형', style: TextStyle(fontWeight: FontWeight.bold)),
             Wrap(

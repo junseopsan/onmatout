@@ -1,156 +1,150 @@
-# ONMATOUT - 요가 연습 앱
+# ONMATOUT - 프론트엔드 개발 문서
 
-## 프로젝트 개요
-ONMATOUT은 초보자와 중급자를 위한 요가 연습 앱입니다. 300개의 요가 아사나 카드를 활용하여 개인화된 트레이닝을 제공합니다.
+# [진행상황]
 
-## 기능 요구사항
-1. 아사나 관리 (Asana Management)
-   - 300개 요가 아사나 카드 제공
-   - 아사나 검색 및 탐색
-   - 이름(한글/영어) 검색
-   - 카테고리별 필터링 (예: 서서하는 자세, 앞으로 굽히는 자세 등)
-   - 난이도별 필터링 (Level 1~5)
-   - 즐겨찾기 기능
-   - 관심 아사나를 저장/관리
-   - 아사나 상세페이지 제공
-   - 아사나 이름 (한글/영어)
-   - 요약 설명
-   - 주요 효과
-   - 아사나 카테고리
-   - 난이도 표시
+- [v] 1단계: 회원가입/로그인 요구사항 및 전체 구조 설계 완료 (2024-06-13)
+- [v] 2단계: user_model.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 3단계: auth_service.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 4단계: auth_viewmodel.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 5단계: register_screen.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 6단계: login_screen.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 7단계: asana_model.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 8단계: asana_viewmodel.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 9단계: asana_card.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 10단계: record_model.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 11단계: record_viewmodel.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 12단계: record_entry.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 13단계: record_screen.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 14단계: stats_model.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 15단계: stats_viewmodel.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 16단계: stats_screen.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 17단계: studio_model.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 18단계: studio_viewmodel.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 19단계: studio_card.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 20단계: studio_screen.dart 설계 및 구현 완료 (2024-06-13)
+- [v] 21단계: studio_detail_screen.dart 설계 및 구현 완료 (2024-06-13)
 
-2. 수련 관리 (Training Journal)
-	- 오늘의 수련 기록 작성
-	- 수련한 아사나 목록 기록
-	- 감정/에너지/집중도 상태 평가 (간단한 선택형 입력)
-	- 자유 메모 작성
-	- 나만의 루틴 기능
-	- 커스텀 루틴 생성
-	- 300개 아사나 중 원하는 아사나 조합하여 루틴 생성
-	- 루틴 편집 및 삭제
+---
 
-3. 수업 및 출석 관리 (Class & Attendance Management)
-   - 수련생 기능
-      - 요가 수업 리스트 열람
-      - 원하는 수업 예약 (선착순 또는 제한 인원제)
-   - 선생님 기능
-      - 출석 체크 기능
-      - 수업 당일 출석자 체크
-      - 회원권 관리
-      - 수련생별 남은 수업 횟수 확인 및 자동 차감
-      - 수업 메모 기능
-      - 오늘 수업 내용 기록 (예: 진행한 아사나, 특이사항 메모)
-      - 수업 캘린더 제공
-      - 달력 기반 수업 스케줄 보기
-      - 날짜별 예약 및 출석 현황 표시
+**모든 주요 화면/모델/뷰모델/위젯 설계 및 구현이 완료되었습니다.**
 
-4. 사용자 경험
-   - 직관적인 UI/UX
-   - 다크 모드 지원
-   
+## #project-overview (프로젝트 개요)
 
-5. 바텀탭구조
-   - 아사나탭
-      - 300개의 아사나보기, 필터, 즐겨찾기
-   - 수련 탭
-      - 오늘 수련 기록, 루틴 저장, 메모
-   - 수업탭
-      - 수련생:수업예약, 
-      - 선생님: 출석 체크, 회원관리, 수업메모
+ONMATOUT은 요가 입문자와 중급자를 위한 모바일 요가 수련 앱으로, 300개의 요가 아사나 카드를 기반으로 루틴 생성, 수련 기록, 수련 통계, 요가원 탐색 기능을 제공합니다. 사용자는 수련 후 감정/에너지 상태를 기록하며 수련 루틴을 습관화할 수 있고, 주변 요가원을 탐색할 수 있습니다.
 
-## 현재 파일 구조
+## #feature-requirements (기능 요구사항)
+
+### ✅ 아사나 기능 (asanas)
+
+* 전체 300개의 아사나 카드 제공
+* 아사나 검색 (한글/영어 이름)
+* 필터링 (카테고리, 난이도)
+* 즐겨찾기 기능
+* 아사나 상세 페이지:
+
+  * 이미지, 이름, 설명, 효과, 카테고리, 난이도 표시
+
+### ✅ 수련 기록 (record)
+
+* 오늘의 수련 기록 작성 (아사나 목록)
+* 감정/에너지/집중도 상태 선택
+* 메모 작성 기능
+* 수련 히스토리 확인
+
+### ✅ 수련 통계
+
+* 누적 수련 횟수
+* 연속 수련 일수
+* 감정/에너지 통계 시각화
+
+### ✅ 요가원 정보(studio) 탐색
+
+* 지역 기반 요가원 목록 조회
+* 요가원 상세 정보 표시 (지도, 운영시간, 연락처 등)
+* 예약 기능 없음
+
+### ✅ UI/UX
+
+* 직관적이고 반응형 인터페이스
+* 다크모드 지원
+* 바텀탭 기반 내비게이션 구조:
+  * 홈 / 아사나 / 기록 / 요가원 / 프로필
+
+## #relevant-codes (관련 코드)
+
+### Screens
+
+* `home_screen.dart`: 오늘의 루틴/수련 기록 진입점
+* `asana_detail_screen.dart`: 아사나 상세
+* `record_screen.dart`: 수련 기록
+* `stats_screen.dart`: 통계 차트 및 수치
+* `studio_screen.dart`: 요가원 리스트
+* `studio_detail_screen.dart`: 요가원 상세 정보
+
+### ViewModels
+
+* `asana_viewmodel.dart`
+* `record_viewmodel.dart`
+* `studio_viewmodel.dart`
+
+### Models
+
+* `asana_model.dart`
+* `record_model.dart`
+* `studio_model.dart`
+* `user_model.dart`
+
+### Widgets
+
+* `asana_card.dart`
+* `record_entry.dart`
+* `studio_card.dart`
+* 공통 위젯 (버튼, 인디케이터 등)
+
+### Services
+
+* `auth_service.dart`: 인증
+* `database_service.dart`: Supabase 연동
+
+## #Current-file-instruction (현재 파일 구조)
+
 ```
-lib/
-├── screens/
-│   ├── auth/           # SMS 인증만
-│   ├── asana/          # 아사나 목록/상세/검색/필터/즐겨찾기
-│   ├── journal/        # 수련일지/루틴/메모
-│   ├── class/          # 수업/출석/회원관리/캘린더
-│   └── home_screen.dart
-├── viewmodels/
-│   ├── auth_viewmodel.dart
-│   ├── asana_viewmodel.dart
-│   ├── journal_viewmodel.dart
-│   ├── routine_viewmodel.dart
-│   └── class_viewmodel.dart
-├── models/
-│   ├── asana_model.dart
-│   ├── journal_model.dart
-│   ├── routine_model.dart
-│   ├── class_model.dart
-│   └── user_model.dart
-├── services/
-│   ├── database_service.dart
-│   ├── auth_service.dart (SMS만)
-│   └── storage_service.dart
-├── widgets/
-│   ├── common/
-│   ├── asana/
-│   ├── routine/
-│   ├── journal/
-│   └── class/
-└── constants/
+ONMATOUT/
+│── lib/
+│   ├── main.dart
+│   ├── screens/
+│   │   ├── login_screen.dart
+│   │   ├── register_screen.dart
+│   │   ├── home_screen.dart
+│   │   ├── asana_detail_screen.dart
+│   │   ├── record_screen.dart
+│   │   ├── stats_screen.dart
+│   │   ├── studio_screen.dart
+│   │   ├── studio_detail_screen.dart
+│   ├── models/
+│   │   ├── user_model.dart
+│   │   ├── asana_model.dart
+│   │   ├── record_model.dart
+│   │   ├── studio_model.dart
+│   ├── viewmodels/
+│   │   ├── auth_viewmodel.dart
+│   │   ├── asana_viewmodel.dart
+│   │   ├── record_viewmodel.dart
+│   │   ├── studio_viewmodel.dart
+│   ├── services/
+│   │   ├── auth_service.dart
+│   │   ├── database_service.dart
+│   ├── widgets/
+│   │   ├── asana_card.dart
+│   │   ├── record_entry.dart
+│   │   ├── studio_card.dart
+│   │   └── common/
+│── pubspec.yaml
+│── README.md
 ```
 
-## 구현 계획
-1. 프로젝트 초기화
-   - [x] Flutter 프로젝트 생성
-   - [x] 필요한 패키지 추가
-   - [x] 디렉토리 구조 생성
-   - [x] 환경 변수 설정
-   - [x] MVVM 패턴 기반 구조 구현
+## #rules (규칙)
 
-2. 모델 클래스 구현
-   - [x] UserModel
-   - [x] AsanaModel
-   - [x] JournalModel
-   - [x] RoutineModel
-   - [x] StatsModel
-
-3. 서비스 클래스 구현
-   - [x] DatabaseService
-   - [x] AuthService
-   - [x] StorageService
-
-4. 뷰모델 클래스 구현
-   - [x] AuthViewModel
-   - [x] AsanaViewModel
-   - [x] JournalViewModel
-   - [x] RoutineViewModel
-   - [x] StatsViewModel
-
-5. 화면 구현
-   - [x] 인증 화면
-   - [x] 아사나 목록 화면
-   - [x] 아사나 상세 화면
-   - [x] 저널 목록 화면
-   - [x] 저널 작성 화면
-   - [x] 루틴 목록 화면
-   - [x] 루틴 편집 화면
-   - [x] 통계 화면
-
-6. 공통 위젯 구현
-   - [x] 로딩 인디케이터
-   - [x] 에러 뷰
-   - [x] 커스텀 앱바
-   - [x] 커스텀 버튼
-   - [x] 커스텀 텍스트 필드
-
-7. 테마 및 스타일
-   - [x] 앱 테마 정의
-   - [x] 색상 팔레트
-   - [x] 텍스트 스타일
-   - [x] 버튼 스타일
-   - [x] 카드 스타일
-
-8. 테스트 및 디버깅
-   - [ ] 단위 테스트
-   - [ ] 위젯 테스트
-   - [ ] 통합 테스트
-   - [ ] 성능 최적화
-   - [ ] 버그 수정
-
-## 규칙
 1. MVVM 패턴을 엄격히 준수
 2. 모든 코드는 Dart 린트 규칙을 준수
 3. 모든 위젯은 반응형으로 구현
@@ -161,73 +155,3 @@ lib/
 8. 모든 UI는 직관적이고 사용자 친화적
 9. 모든 기능은 테스트 가능하게 구현
 10. 모든 코드는 문서화
-
-## 현재 진행 상황
-- [x] 프로젝트 초기화 완료
-- [x] 필요한 패키지 추가 완료
-- [x] 디렉토리 구조 생성 완료
-- [x] 환경 변수 설정 완료
-- [x] MVVM 패턴 기반 구조 구현 완료
-- [x] 모델 클래스 구현 완료
-- [x] 서비스 클래스 구현 완료
-- [x] 뷰모델 클래스 구현 완료
-- [x] 화면 구현 완료
-- [x] 공통 위젯 구현 완료
-- [x] 테마 및 스타일 구현 완료
-- [ ] 테스트 및 디버깅 진행 중
-
-## 다음 작업
-1. 단위 테스트 작성
-   - [ ] 모델 클래스 테스트
-   - [ ] 서비스 클래스 테스트
-   - [ ] 뷰모델 클래스 테스트
-
-2. 위젯 테스트 작성
-   - [ ] 공통 위젯 테스트
-   - [ ] 화면 위젯 테스트
-
-3. 통합 테스트 작성
-   - [ ] 인증 플로우 테스트
-   - [ ] 아사나 관리 플로우 테스트
-   - [ ] 저널 관리 플로우 테스트
-   - [ ] 루틴 관리 플로우 테스트
-
-4. 성능 최적화
-   - [ ] 메모리 사용량 최적화
-   - [ ] 렌더링 성능 최적화
-   - [ ] 네트워크 요청 최적화
-   - [ ] 이미지 캐싱 최적화
-
-5. 버그 수정
-   - [x] 린트 에러 수정
-   - [x] 타입 에러 수정
-   - [x] UI 버그 수정
-   - [x] 로직 버그 수정
-
-## 구현된 기능
-1. 아사나 관리
-   - [x] 아사나 목록 조회
-   - [x] 아사나 상세 정보 조회
-   - [x] 아사나 검색 및 필터링
-   - [x] 즐겨찾기 기능
-
-2. 트레이닝 기록
-   - [x] 저널 작성
-   - [x] 저널 조회
-   - [x] 저널 수정
-   - [x] 저널 삭제
-
-3. 오늘의 루틴
-   - [x] 루틴 생성
-   - [x] 루틴 조회
-   - [x] 루틴 수정
-   - [x] 루틴 삭제
-   - [x] 루틴 복제
-   - [x] 루틴 단계 추가
-   - [x] 루틴 단계 수정
-   - [x] 루틴 단계 삭제
-   - [x] 루틴 단계 순서 변경
-   - [x] 기본 루틴 설정
-   - [x] 기본 루틴 조회
-   - [x] 커스텀 루틴 조회
-   - [x] 루틴 검색

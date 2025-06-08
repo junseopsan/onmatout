@@ -74,7 +74,10 @@ class _AsanaListScreenState extends State<AsanaListScreen> {
                     ),
                   ),
                 ),
-                title: Text(asana.name),
+                title: Text(
+                  asana.name,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                ),
                 subtitle: Text(asana.category),
                 trailing: IconButton(
                   icon: Icon(

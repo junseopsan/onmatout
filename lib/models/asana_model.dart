@@ -1,105 +1,72 @@
 import 'package:flutter/foundation.dart';
 import '../utils/proficiency_level.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 class AsanaModel {
   final String id;
-  final String name;
-  final String sanskritName;
-  final String sanskritNameKr;
-  final String imageUrl;
+  final String nameKo;
+  final String nameEn;
   final String description;
-  final ProficiencyLevel difficulty;
+  final String effect;
+  final String imageUrl;
   final String category;
-  final String effects;
-  final String story;
-  final int duration;
+  final String difficulty;
   final bool isFavorite;
-  final String imageNumber;
 
   const AsanaModel({
     required this.id,
-    required this.name,
-    required this.sanskritName,
-    required this.sanskritNameKr,
-    required this.imageUrl,
+    required this.nameKo,
+    required this.nameEn,
     required this.description,
-    required this.difficulty,
+    required this.effect,
+    required this.imageUrl,
     required this.category,
-    required this.effects,
-    required this.story,
-    required this.duration,
+    required this.difficulty,
     this.isFavorite = false,
-    required this.imageNumber,
   });
 
-  AsanaModel copyWith({
-    String? id,
-    String? name,
-    String? sanskritName,
-    String? sanskritNameKr,
-    String? imageUrl,
-    String? description,
-    ProficiencyLevel? difficulty,
-    String? category,
-    String? effects,
-    String? story,
-    int? duration,
-    bool? isFavorite,
-    String? imageNumber,
-  }) {
+  factory AsanaModel.fromJson(Map<String, dynamic> json) {
     return AsanaModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      sanskritName: sanskritName ?? this.sanskritName,
-      sanskritNameKr: sanskritNameKr ?? this.sanskritNameKr,
-      imageUrl: imageUrl ?? this.imageUrl,
-      description: description ?? this.description,
-      difficulty: difficulty ?? this.difficulty,
-      category: category ?? this.category,
-      effects: effects ?? this.effects,
-      story: story ?? this.story,
-      duration: duration ?? this.duration,
-      isFavorite: isFavorite ?? this.isFavorite,
-      imageNumber: imageNumber ?? this.imageNumber,
+      id: json['id'] as String,
+      nameKo: json['name_ko'] as String,
+      nameEn: json['name_en'] as String,
+      description: json['description'] as String,
+      effect: json['effect'] as String,
+      imageUrl: json['image_url'] as String,
+      category: json['category'] as String,
+      difficulty: json['difficulty'] as String,
+      isFavorite: json['is_favorite'] ?? false,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
-      'sanskritName': sanskritName,
-      'sanskritNameKr': sanskritNameKr,
-      'imageUrl': imageUrl,
+      'name_ko': nameKo,
+      'name_en': nameEn,
       'description': description,
-      'difficulty': difficulty.toString(),
+      'effect': effect,
+      'image_url': imageUrl,
       'category': category,
-      'effects': effects,
-      'story': story,
-      'duration': duration,
-      'isFavorite': isFavorite,
-      'image_number': imageNumber,
+      'difficulty': difficulty,
+      'is_favorite': isFavorite,
     };
   }
 
-  factory AsanaModel.fromJson(Map<String, dynamic> json) {
+  AsanaModel copyWith({
+    bool? isFavorite,
+  }) {
     return AsanaModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      sanskritName: json['sanskritName'] as String,
-      sanskritNameKr: json['sanskritNameKr'] as String,
-      imageUrl: json['imageUrl'] as String,
-      description: json['description'] as String,
-      difficulty: ProficiencyLevel.values.firstWhere(
-        (e) => e.toString() == json['difficulty'],
-      ),
-      category: json['category'] as String,
-      effects: json['effects'] as String,
-      story: json['story'] as String,
-      duration: json['duration'] as int,
-      isFavorite: json['isFavorite'] as bool? ?? false,
-      imageNumber: json['image_number'] as String? ?? '001',
+      id: id,
+      nameKo: nameKo,
+      nameEn: nameEn,
+      description: description,
+      effect: effect,
+      imageUrl: imageUrl,
+      category: category,
+      difficulty: difficulty,
+      isFavorite: isFavorite ?? this.isFavorite,
     );
   }
 
@@ -108,36 +75,28 @@ class AsanaModel {
     if (identical(this, other)) return true;
     return other is AsanaModel &&
         other.id == id &&
-        other.name == name &&
-        other.sanskritName == sanskritName &&
-        other.sanskritNameKr == sanskritNameKr &&
-        other.imageUrl == imageUrl &&
+        other.nameKo == nameKo &&
+        other.nameEn == nameEn &&
         other.description == description &&
-        other.difficulty == difficulty &&
+        other.effect == effect &&
+        other.imageUrl == imageUrl &&
         other.category == category &&
-        other.effects == effects &&
-        other.story == story &&
-        other.duration == duration &&
-        other.isFavorite == isFavorite &&
-        other.imageNumber == imageNumber;
+        other.difficulty == difficulty &&
+        other.isFavorite == isFavorite;
   }
 
   @override
   int get hashCode {
     return Object.hash(
       id,
-      name,
-      sanskritName,
-      sanskritNameKr,
-      imageUrl,
+      nameKo,
+      nameEn,
       description,
-      difficulty,
+      effect,
+      imageUrl,
       category,
-      effects,
-      story,
-      duration,
+      difficulty,
       isFavorite,
-      imageNumber,
     );
   }
 } 

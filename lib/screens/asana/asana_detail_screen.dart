@@ -131,6 +131,34 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
                   widget.asana.sanskritName,
                   style: const TextStyle(fontSize: 16, color: Colors.grey),
                 ),
+                // 의미(해석) 박스
+                if (widget.asana.asanaMeaning.trim().isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.green[50],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: widget.asana.asanaMeaning
+                                .split('+')
+                                .map((s) => Text(
+                                      s.trim(),
+                                      style: const TextStyle(fontSize: 15, color: Colors.green, fontWeight: FontWeight.w500),
+                                    ))
+                                .toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

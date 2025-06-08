@@ -1,7 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../models/journal_model.dart';
 import '../models/asana_model.dart';
-import '../models/routine_model.dart';
+import '../models/record_model.dart';
+import '../models/studio_model.dart';
 
 class DatabaseService {
   final SupabaseClient _supabase;

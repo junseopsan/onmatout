@@ -56,7 +56,7 @@ class _AsanaTabState extends State<AsanaTab> {
     try {
       final supabase = Supabase.instance.client;
       final catRes = await supabase.from('asanacategory').select('posture_type_ko, movement_type_ko, category_name_en, category_name_ko');
-      final asanaRes = await supabase.from('asanas').select('id, sanskrit_name_kr, sanskrit_name_en, category_name_en, level, image_number, effect, story');
+      final asanaRes = await supabase.from('asanas').select('id, sanskrit_name_kr, sanskrit_name_en, category_name_en, level, image_number, effect, story, asana_meaning');
       
       print('카테고리 데이터: $catRes');
       
@@ -240,6 +240,9 @@ class _AsanaTabState extends State<AsanaTab> {
                               story: asana['story'] ?? '',
                               duration: 0,
                               imageNumber: asanaImageNumber,
+                              asanaMeaning: (asana.containsKey('asana_meaning') && asana['asana_meaning'] is String)
+                                  ? asana['asana_meaning'] as String
+                                  : '',
                             );
                             Navigator.push(
                               context,
@@ -272,12 +275,12 @@ class _AsanaTabState extends State<AsanaTab> {
                                   const SizedBox(height: 8),
                                   Text(
                                     asana['sanskrit_name_kr'] ?? '',
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                                     textAlign: TextAlign.center,
                                   ),
                                   Text(
                                     asana['sanskrit_name_en'] ?? '',
-                                    style: const TextStyle(fontSize: 13, color: Colors.grey),
+                                    style: const TextStyle(fontSize: 12, color: Colors.grey),
                                     textAlign: TextAlign.center,
                                   ),
                                   const SizedBox(height: 4),

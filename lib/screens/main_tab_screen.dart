@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'asana/asana_tab.dart';
-import 'journal/journal_tab.dart';
-import 'class/class_tab.dart';
+import '../record_screen.dart';
+import 'studio/studio_tab.dart';
+
 
 class MainTabScreen extends StatefulWidget {
   const MainTabScreen({super.key});
@@ -15,8 +16,9 @@ class _MainTabScreenState extends State<MainTabScreen> {
 
   final List<Widget> _tabs = const [
     AsanaTab(),
-    JournalTab(),
-    ClassTab(),
+    RecordScreen(),
+    StudioTab(),
+    Center(child: Text('프로필')), // ProfileTab()으로 교체 가능
   ];
 
   @override
@@ -26,6 +28,10 @@ class _MainTabScreenState extends State<MainTabScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
+        backgroundColor: Colors.black,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white70,
+        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.self_improvement),
@@ -38,6 +44,10 @@ class _MainTabScreenState extends State<MainTabScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.class_),
             label: '수업',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: '프로필',
           ),
         ],
       ),

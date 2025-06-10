@@ -19,7 +19,7 @@ class RecordViewModel extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
     try {
-      _records = await _databaseService.fetchAllRecords();
+      _records = await _databaseService.getRecords();
     } catch (e) {
       _errorMessage = e.toString();
     } finally {
@@ -33,7 +33,7 @@ class RecordViewModel extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
     try {
-      await _databaseService.addRecord(record);
+      await _databaseService.insertRecord(record);
       await fetchRecords();
     } catch (e) {
       _errorMessage = e.toString();
@@ -58,7 +58,7 @@ class RecordViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteRecord(String recordId) async {
+  Future<void> deleteRecord(int recordId) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();

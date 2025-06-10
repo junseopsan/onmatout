@@ -14,9 +14,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  bool _obscurePassword = true;
+  bool _rememberMe = false;
+
   static const String usernameLabel = '아이디';
-  static const String passwordLabel = '비밀번호';
-  static const String loginBtn = '로그인';
+  static const String passwordLabel = 'Password';
+  static const String loginBtn = 'Sign In';
   static const String requiredFieldMsg = '필수 입력 항목입니다.';
 
   @override
@@ -33,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _passwordController.text,
     );
     if (success) {
-      // TODO: 홈 화면 등으로 이동 (Navigator.pushReplacement 등)
+      Navigator.pushReplacementNamed(context, '/home');
     }
   }
 
@@ -42,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Consumer<AuthViewModel>(
       builder: (context, viewModel, child) {
         return Scaffold(
-          appBar: AppBar(title: const Text(loginBtn)),
+          backgroundColor: const Color(0xFF181A20),
           body: Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24),
@@ -51,38 +54,134 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    const SizedBox(height: 24),
+                    Center(
+                      child: Image.asset(
+                        'images/onthemat_rm_bg.png',
+                        width: 700,
+                        height: 300,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    const SizedBox(height: 32),
                     TextFormField(
                       controller: _usernameController,
-                      decoration: const InputDecoration(labelText: usernameLabel),
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        labelText: usernameLabel,
+                        labelStyle: const TextStyle(color: Colors.white70),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.white24),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.white),
+                        ),
+                        fillColor: const Color(0xFF23252B),
+                        filled: true,
+                      ),
                       validator: (value) =>
                           value == null || value.isEmpty ? requiredFieldMsg : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _passwordController,
-                      decoration: const InputDecoration(labelText: passwordLabel),
-                      obscureText: true,
+                      style: const TextStyle(color: Colors.white),
+                      obscureText: _obscurePassword,
+                      decoration: InputDecoration(
+                        labelText: passwordLabel,
+                        labelStyle: const TextStyle(color: Colors.white70),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.white24),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.white),
+                        ),
+                        fillColor: const Color(0xFF23252B),
+                        filled: true,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                            color: Colors.white54,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
+                      ),
                       validator: (value) =>
                           value == null || value.isEmpty ? requiredFieldMsg : null,
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: _rememberMe,
+                          onChanged: (v) {
+                            setState(() {
+                              _rememberMe = v ?? false;
+                            });
+                          },
+                          activeColor: Colors.white,
+                          checkColor: Colors.black,
+                        ),
+                        const Text('Remember me', style: TextStyle(color: Colors.white70)),
+                        const Spacer(),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text('Forgot Password', style: TextStyle(color: Colors.white70)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
                     if (viewModel.errorMessage != null)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8),
-                        child: Text(
-                          viewModel.errorMessage!,
-                          style: const TextStyle(color: Colors.red),
+                        child: Column(
+                          children: [
+                            Text(
+                              viewModel.errorMessage!,
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                            if (viewModel.errorMessage!.contains('존재하지 않는 아이디'))
+                              TextButton(
+                                onPressed: () => Navigator.pushNamed(context, '/register'),
+                                child: const Text('회원가입하기'),
+                              ),
+                          ],
                         ),
                       ),
-                    ElevatedButton(
-                      onPressed: viewModel.isLoading ? null : () => _login(viewModel),
-                      child: viewModel.isLoading
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Text(loginBtn),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      height: 48,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                        ),
+                        onPressed: viewModel.isLoading ? null : () => _login(viewModel),
+                        child: viewModel.isLoading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : const Text(loginBtn, style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextButton(
+                      onPressed: () => Navigator.pushNamed(context, '/register'),
+                      child: const Text('회원가입', style: TextStyle(color: Colors.white70)),
                     ),
                   ],
                 ),

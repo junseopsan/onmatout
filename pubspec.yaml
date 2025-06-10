@@ -58,7 +58,7 @@ dependencies:
   http: ^1.1.0
   sqflite: ^2.3.2
   path: ^1.8.3
-  carousel_slider: ^5.0.0
+  flutter_carousel_widget: ^2.2.0
   shimmer: ^3.0.0
 
 dev_dependencies:
@@ -91,6 +91,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/animations/
+    - images/
     - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see

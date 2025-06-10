@@ -41,7 +41,7 @@ class RecordEntry extends StatelessWidget {
                       children: record.asanas.take(3).map((asana) => Padding(
                         padding: const EdgeInsets.only(left: 4),
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(asana.imageUrl),
+                          backgroundImage: NetworkImage('https://storage.googleapis.com/onmatout-images/${asana.imageNumber}.jpg'),
                           radius: 14,
                         ),
                       )).toList(),
@@ -50,7 +50,7 @@ class RecordEntry extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               if (record.asanas.isNotEmpty)
-                Text('$asanasLabel: ${record.asanas.map((a) => a.nameKo).join(", ")}', style: const TextStyle(fontSize: 14)),
+                Text('$asanasLabel: ${record.asanas.map((a) => a.sanskritNameKr).join(", ")}', style: const TextStyle(fontSize: 14)),
               const SizedBox(height: 8),
               Row(
                 children: [

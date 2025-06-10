@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/record_viewmodel.dart';
-import '../models/record_model.dart';
-import '../models/asana_model.dart';
+import '../../models/record_model.dart';
+import '../../models/asana_model.dart';
 import '../widgets/record_entry.dart';
-import '../record_screen.dart'; // 또는 실제 경로에 맞게 수정
 
 class RecordScreen extends StatefulWidget {
   const RecordScreen({Key? key}) : super(key: key);
@@ -56,7 +55,7 @@ class _RecordScreenState extends State<RecordScreen> {
                 final selected = tempSelected.contains(asana);
                 return CheckboxListTile(
                   value: selected,
-                  title: Text(asana.nameKo),
+                  title: Text(asana.sanskritNameKr),
                   onChanged: (v) {
                     setState(() {
                       if (v == true) {
@@ -132,7 +131,7 @@ class _RecordScreenState extends State<RecordScreen> {
                         onPressed: () => _showAsanaSelectDialog([]), // TODO: 실제 아사나 목록 전달
                         child: Text(_selectedAsanas.isEmpty
                             ? asanaSelectLabel
-                            : _selectedAsanas.map((a) => a.nameKo).join(', ')),
+                            : _selectedAsanas.map((a) => a.sanskritNameKr).join(', ')),
                       ),
                       const SizedBox(height: 8),
                       DropdownButtonFormField<String>(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/studio_model.dart';
+import '../../models/studio_model.dart';
 
 class StudioDetailScreen extends StatelessWidget {
   final StudioModel studio;
@@ -21,11 +21,11 @@ class StudioDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (studio.imageUrl.isNotEmpty)
+            if (studio.images.isNotEmpty)
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.network(
-                  studio.imageUrl,
+                  studio.images.first,
                   width: double.infinity,
                   height: 180,
                   fit: BoxFit.cover,
@@ -42,7 +42,7 @@ class StudioDetailScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text('$phoneLabel: ${studio.phone}', style: const TextStyle(fontSize: 15)),
             const SizedBox(height: 8),
-            Text('$openHoursLabel: ${studio.openHours}', style: const TextStyle(fontSize: 15)),
+            Text('$openHoursLabel: ${studio.hours.values.join(', ')}', style: const TextStyle(fontSize: 15)),
             const SizedBox(height: 8),
             Text('$locationLabel: (${studio.latitude}, ${studio.longitude})', style: const TextStyle(fontSize: 15)),
             const SizedBox(height: 16),

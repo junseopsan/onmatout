@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:onmatout/models/asana_model.dart';
 import 'package:onmatout/screens/asana/asana_detail_screen.dart';
-import 'package:onmatout/utils/proficiency_level.dart';
 import '../../models/asana_model.dart';
+import '../../utils/proficiency_level.dart';
 
-class AsanaTab extends StatefulWidget {
-  const AsanaTab({super.key});
+class AsanaScreen extends StatefulWidget {
+  const AsanaScreen({super.key});
 
   @override
-  State<AsanaTab> createState() => _AsanaTabState();
+  State<AsanaScreen> createState() => _AsanaScreenState();
 }
 
-class _AsanaTabState extends State<AsanaTab> {
+class _AsanaScreenState extends State<AsanaScreen> {
   List<Map<String, dynamic>> _categories = [];
   List<Map<String, dynamic>> _asanas = [];
   String? _selectedPosture = '전체';
@@ -229,20 +229,16 @@ class _AsanaTabState extends State<AsanaTab> {
                           onTap: () {
                             final asanaModel = AsanaModel(
                               id: asana['id'] ?? '',
-                              name: asana['sanskrit_name_en'] ?? '',
                               sanskritNameKr: asana['sanskrit_name_kr'] ?? '',
-                              sanskritName: asana['sanskrit_name_en'] ?? '',
-                              category: _AsanaTabState.categoryNameKoMap[asana['category_name_en']] ?? asana['category_name_ko'] ?? asana['category_name_en'],
-                              difficulty: ProficiencyLevel.fromInt(int.tryParse(asana['level']?.toString() ?? '0')),
-                              imageUrl: thumbnailUrl,
-                              effects: asana['effect'] ?? '',
-                              description: asana['sanskrit_name_kr'] ?? '',
+                              sanskritNameEn: asana['sanskrit_name_en'] ?? '',
+                              level: asana['level'] ?? '',
+                              effectPoint: asana['effect_point'] ?? '',
+                              effect: asana['effect'] ?? '',
                               story: asana['story'] ?? '',
-                              duration: 0,
+                              storyPoint: asana['story_point'] ?? '',
+                              categoryNameEn: asana['category_name_en'] ?? '',
                               imageNumber: asanaImageNumber,
-                              asanaMeaning: (asana.containsKey('asana_meaning') && asana['asana_meaning'] is String)
-                                  ? asana['asana_meaning'] as String
-                                  : '',
+                              asanaMeaning: asana['asana_meaning'] ?? '',
                             );
                             Navigator.push(
                               context,

@@ -1,91 +1,15 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../models/studio_model.dart';
 import '../models/asana_model.dart';
 import '../models/record_model.dart';
-import '../models/studio_model.dart';
+import '../models/stats_model.dart';
 
 class DatabaseService {
   final SupabaseClient _supabase;
 
   DatabaseService(this._supabase);
 
-  Future<List<JournalModel>> fetchAllJournals() async {
-    final response = await _supabase
-        .from('journals')
-        .select('*, asanas:journal_asanas(*)')
-        .order('date', ascending: false);
-
-    return (response as List<dynamic>)
-        .map((json) => JournalModel.fromJson(json as Map<String, dynamic>))
-        .toList();
-  }
-
-  Future<JournalModel?> fetchJournalById(String id) async {
-    final response = await _supabase
-        .from('journals')
-        .select('*, asanas:journal_asanas(*)')
-        .eq('id', id)
-        .single();
-
-    if (response == null) return null;
-    return JournalModel.fromJson(response as Map<String, dynamic>);
-  }
-
-  Future<void> addJournal(JournalModel journal) async {
-    final journalData = journal.toJson();
-    final asanas = journalData.remove('asanas') as List<dynamic>?;
-
-    final response = await _supabase
-        .from('journals')
-        .insert(journalData)
-        .select()
-        .single();
-
-    if (asanas != null) {
-      for (final asana in asanas) {
-        await _supabase.from('journal_asanas').insert({
-          'journal_id': response['id'],
-          'asana_id': asana['id'],
-        });
-      }
-    }
-  }
-
-  Future<void> updateJournal(JournalModel journal) async {
-    final journalData = journal.toJson();
-    final asanas = journalData.remove('asanas') as List<dynamic>?;
-
-    await _supabase
-        .from('journals')
-        .update(journalData)
-        .eq('id', journal.id);
-
-    if (asanas != null) {
-      await _supabase
-          .from('journal_asanas')
-          .delete()
-          .eq('journal_id', journal.id);
-
-      for (final asana in asanas) {
-        await _supabase.from('journal_asanas').insert({
-          'journal_id': journal.id,
-          'asana_id': asana['id'],
-        });
-      }
-    }
-  }
-
-  Future<void> deleteJournal(String journalId) async {
-    await _supabase
-        .from('journal_asanas')
-        .delete()
-        .eq('journal_id', journalId);
-
-    await _supabase
-        .from('journals')
-        .delete()
-        .eq('id', journalId);
-  }
-
+  // Supabase 관련 메서드
   Future<List<AsanaModel>> fetchAllAsanas() async {
     final response = await _supabase
         .from('asanas')
@@ -148,104 +72,115 @@ class DatabaseService {
         .toList();
   }
 
-  Future<List<RoutineModel>> fetchAllRoutines() async {
+  Future<void> deleteAsana(String id) async {
+    await _supabase
+        .from('asanas')
+        .delete()
+        .eq('id', id);
+  }
+
+  Future<void> deleteUserData(String userId) async {
+    await _supabase
+        .from('asanas')
+        .delete()
+        .eq('user_id', userId);
+  }
+
+  // Studio 관련 메서드
+  Future<List<StudioModel>> getStudios() async {
+    final response = await _supabase
+        .from('studios')
+        .select('*, studio_images(*), studio_hours(*)')
+        .order('name');
+
+    return (response as List<dynamic>)
+        .map((json) => StudioModel.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<List<StudioModel>> searchStudios(String query) async {
+    final response = await _supabase
+        .from('studios')
+        .select('*, studio_images(*), studio_hours(*)')
+        .or('name.ilike.%$query%,address.ilike.%$query%')
+        .order('name');
+
+    return (response as List<dynamic>)
+        .map((json) => StudioModel.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<void> insertStudio(StudioModel studio) async {
+    await _supabase.from('studios').insert(studio.toJson());
+  }
+
+  Future<void> updateStudio(StudioModel studio) async {
+    await _supabase
+        .from('studios')
+        .update(studio.toJson())
+        .eq('id', studio.id);
+  }
+
+  Future<void> deleteStudio(int id) async {
+    await _supabase
+        .from('studios')
+        .delete()
+        .eq('id', id);
+  }
+
+  // Record 관련 메서드
+  Future<List<RecordModel>> getRecords() async {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) return [];
 
     final response = await _supabase
-        .from('routines')
-        .select('*, steps:routine_steps(*)')
+        .from('records')
+        .select('*, record_asanas(*, asanas(*))')
         .eq('user_id', userId)
-        .order('created_at', ascending: false);
+        .order('date', ascending: false);
 
     return (response as List<dynamic>)
-        .map((json) => RoutineModel.fromJson(json as Map<String, dynamic>))
+        .map((json) => RecordModel.fromJson(json as Map<String, dynamic>))
         .toList();
   }
 
-  Future<void> addRoutine(RoutineModel routine) async {
+  Future<void> insertRecord(RecordModel record) async {
     final userId = _supabase.auth.currentUser?.id;
     if (userId == null) return;
 
-    final routineData = routine.toJson();
-    routineData['user_id'] = userId;
+    final recordData = {
+      ...record.toJson(),
+      'user_id': userId,
+    };
+
+    await _supabase.from('records').insert(recordData);
+  }
+
+  Future<void> updateRecord(RecordModel record) async {
+    await _supabase
+        .from('records')
+        .update(record.toJson())
+        .eq('id', record.id);
+  }
+
+  Future<void> deleteRecord(int id) async {
+    await _supabase
+        .from('records')
+        .delete()
+        .eq('id', id);
+  }
+
+  // Stats 관련 메서드
+  Future<StatsModel> fetchStats() async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) throw Exception('사용자가 로그인되어 있지 않습니다.');
 
     final response = await _supabase
-        .from('routines')
-        .insert(routineData)
-        .select()
+        .from('users')
+        .select('streak_count, total_practice_days')
+        .eq('id', userId)
         .single();
 
-    for (final step in routine.steps) {
-      await _supabase.from('routine_steps').insert({
-        'routine_id': response['id'],
-        'asana_id': step.asanaId,
-        'asana_name': step.asanaName,
-        'asana_image_url': step.asanaImageUrl,
-        'duration': step.duration,
-        'notes': step.notes,
-      });
-    }
+    return StatsModel.fromJson(response as Map<String, dynamic>);
   }
-
-  Future<void> updateRoutine(RoutineModel routine) async {
-    final userId = _supabase.auth.currentUser?.id;
-    if (userId == null) return;
-
-    final routineData = routine.toJson();
-    routineData['user_id'] = userId;
-
-    await _supabase
-        .from('routines')
-        .update(routineData)
-        .eq('id', routine.id)
-        .eq('user_id', userId);
-
-    await _supabase
-        .from('routine_steps')
-        .delete()
-        .eq('routine_id', routine.id);
-
-    for (final step in routine.steps) {
-      await _supabase.from('routine_steps').insert({
-        'routine_id': routine.id,
-        'asana_id': step.asanaId,
-        'asana_name': step.asanaName,
-        'asana_image_url': step.asanaImageUrl,
-        'duration': step.duration,
-        'notes': step.notes,
-      });
-    }
-  }
-
-  Future<void> deleteRoutine(String routineId) async {
-    final userId = _supabase.auth.currentUser?.id;
-    if (userId == null) return;
-
-    await _supabase
-        .from('routine_steps')
-        .delete()
-        .eq('routine_id', routineId);
-
-    await _supabase
-        .from('routines')
-        .delete()
-        .eq('id', routineId)
-        .eq('user_id', userId);
-  }
-
-  Future<RoutineModel?> fetchRoutineById(String id) async {
-    final userId = _supabase.auth.currentUser?.id;
-    if (userId == null) return null;
-
-    final response = await _supabase
-        .from('routines')
-        .select('*, steps:routine_steps(*)')
-        .eq('id', id)
-        .eq('user_id', userId)
-        .single();
-
-    if (response == null) return null;
-    return RoutineModel.fromJson(response as Map<String, dynamic>);
-  }
-} 
+}

@@ -26,9 +26,9 @@ class StudioCard extends StatelessWidget {
             // 이미지
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: studio.imageUrl.isNotEmpty
+              child: studio.images.isNotEmpty
                   ? Image.network(
-                      studio.imageUrl,
+                      studio.images.first,
                       width: 80,
                       height: 80,
                       fit: BoxFit.cover,

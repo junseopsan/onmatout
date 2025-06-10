@@ -53,7 +53,7 @@ class _AsanaListScreenState extends State<AsanaListScreen> {
                   radius: 24,
                   child: ClipOval(
                     child: CachedNetworkImage(
-                      imageUrl: asana.imageUrl,
+                      imageUrl: 'https://storage.googleapis.com/onmatout-images/${asana.imageNumber}.jpg',
                       width: 40,
                       height: 40,
                       fit: BoxFit.cover,
@@ -75,10 +75,10 @@ class _AsanaListScreenState extends State<AsanaListScreen> {
                   ),
                 ),
                 title: Text(
-                  asana.name,
+                  asana.sanskritNameKr,
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 ),
-                subtitle: Text(asana.category),
+                subtitle: Text(asana.categoryNameEn),
                 trailing: IconButton(
                   icon: Icon(
                     asana.isFavorite ? Icons.favorite : Icons.favorite_border,

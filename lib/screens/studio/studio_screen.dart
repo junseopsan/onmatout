@@ -3,6 +3,17 @@ import 'package:provider/provider.dart';
 import '../viewmodels/studio_viewmodel.dart';
 import '../widgets/studio_card.dart';
 
+class StudioTab extends StatelessWidget {
+  const StudioTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('요가원'),
+    );
+  }
+}
+
 class StudioScreen extends StatefulWidget {
   const StudioScreen({Key? key}) : super(key: key);
 

@@ -7,7 +7,7 @@ import 'viewmodels/auth_viewmodel.dart';
 import 'services/database_service.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
-import 'screens/main_tab_screen.dart';
+import 'screens/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,12 +18,14 @@ void main() async {
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
+
+  final databaseService = DatabaseService(Supabase.instance.client);
   
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => AsanaViewModel(DatabaseService(Supabase.instance.client)),
+          create: (_) => AsanaViewModel(databaseService),
         ),
         ChangeNotifierProvider(
           create: (_) => AuthViewModel(),
@@ -76,7 +78,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
-        '/home': (context) => const MainTabScreen(),
+        '/home': (context) => const MainScreen(),
       },
     );
   }

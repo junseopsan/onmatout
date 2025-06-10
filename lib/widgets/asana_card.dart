@@ -29,7 +29,7 @@ class AsanaCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Image.network(
-                asana.imageUrl,
+                'https://storage.googleapis.com/onmatout-images/${asana.imageNumber}.jpg',
                 width: 80,
                 height: 80,
                 fit: BoxFit.cover,
@@ -48,19 +48,19 @@ class AsanaCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    asana.nameKo,
+                    asana.sanskritNameKr,
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    asana.nameEn,
+                    asana.sanskritNameEn,
                     style: const TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      Text('$categoryLabel: ${asana.category}', style: const TextStyle(fontSize: 12)),
+                      Text('$categoryLabel: ${asana.categoryNameEn}', style: const TextStyle(fontSize: 12)),
                       const SizedBox(width: 8),
-                      Text('$difficultyLabel: ${asana.difficulty}', style: const TextStyle(fontSize: 12)),
+                      Text('$difficultyLabel: ${asana.level}', style: const TextStyle(fontSize: 12)),
                     ],
                   ),
                 ],

@@ -22,7 +22,7 @@ class StudioViewModel extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
     try {
-      _studios = await _databaseService.fetchAllStudios();
+      _studios = await _databaseService.getStudios();
       _filteredStudios = _studios;
     } catch (e) {
       _errorMessage = e.toString();
@@ -42,6 +42,10 @@ class StudioViewModel extends ChangeNotifier {
   }
 
   StudioModel? getStudioById(String id) {
-    return _studios.firstWhere((s) => s.id == id, orElse: () => null);
+    try {
+      return _studios.firstWhere((s) => s.id.toString() == id);
+    } catch (e) {
+      return null;
+    }
   }
 } 

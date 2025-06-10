@@ -18,13 +18,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool _isUsernameChecked = false;
   bool _isUsernameAvailable = false;
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   static const String usernameLabel = '아이디';
-  static const String emailLabel = '이메일';
-  static const String passwordLabel = '비밀번호';
-  static const String confirmPasswordLabel = '비밀번호 확인';
+  static const String emailLabel = 'Email';
+  static const String passwordLabel = 'Password';
+  static const String confirmPasswordLabel = 'Confirm Password';
   static const String checkUsernameBtn = '중복확인';
-  static const String registerBtn = '회원가입';
+  static const String registerBtn = 'Sign Up';
   static const String usernameAvailableMsg = '사용 가능한 아이디입니다.';
   static const String usernameNotAvailableMsg = '이미 사용 중인 아이디입니다.';
   static const String passwordNotMatchMsg = '비밀번호가 일치하지 않습니다.';
@@ -76,7 +78,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Consumer<AuthViewModel>(
       builder: (context, viewModel, child) {
         return Scaffold(
-          appBar: AppBar(title: const Text(registerBtn)),
+          backgroundColor: const Color(0xFF181A20),
+          appBar: AppBar(
+            backgroundColor: const Color(0xFF181A20),
+            elevation: 0,
+            iconTheme: const IconThemeData(color: Colors.white),
+            title: const Text(
+              '계정 설정',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            centerTitle: true,
+          ),
           body: Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24),
@@ -85,75 +101,197 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    TextFormField(
-                      controller: _usernameController,
-                      decoration: InputDecoration(
-                        labelText: usernameLabel,
-                        suffixIcon: TextButton(
+                    const SizedBox(height: 32),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _usernameController,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              labelText: usernameLabel,
+                              labelStyle: const TextStyle(color: Colors.white70),
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white24),
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                              errorText: _isUsernameChecked && !_isUsernameAvailable
+                                  ? usernameNotAvailableMsg
+                                  : null,
+                            ),
+                            validator: (value) =>
+                                value == null || value.isEmpty ? requiredFieldMsg : null,
+                            onChanged: (_) {
+                              setState(() {
+                                _isUsernameChecked = false;
+                                _isUsernameAvailable = false;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton(
                           onPressed: viewModel.isLoading
                               ? null
                               : () => _checkUsername(viewModel),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
                           child: const Text(checkUsernameBtn),
                         ),
-                      ),
-                      validator: (value) =>
-                          value == null || value.isEmpty ? requiredFieldMsg : null,
+                      ],
                     ),
-                    if (_isUsernameChecked)
+                    if (_isUsernameChecked && _isUsernameAvailable)
                       Padding(
-                        padding: const EdgeInsets.only(top: 4, left: 4),
+                        padding: const EdgeInsets.only(top: 4),
                         child: Text(
-                          _isUsernameAvailable
-                              ? usernameAvailableMsg
-                              : usernameNotAvailableMsg,
-                          style: TextStyle(
-                            color: _isUsernameAvailable ? Colors.green : Colors.red,
-                            fontSize: 12,
-                          ),
+                          usernameAvailableMsg,
+                          style: const TextStyle(color: Colors.green),
                         ),
                       ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(labelText: emailLabel),
-                      validator: (value) =>
-                          value == null || value.isEmpty ? requiredFieldMsg : null,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _passwordController,
-                      decoration: const InputDecoration(labelText: passwordLabel),
-                      obscureText: true,
-                      validator: (value) =>
-                          value == null || value.isEmpty ? requiredFieldMsg : null,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _confirmPasswordController,
-                      decoration: const InputDecoration(labelText: confirmPasswordLabel),
-                      obscureText: true,
-                      validator: (value) =>
-                          value == null || value.isEmpty ? requiredFieldMsg : null,
-                    ),
-                    const SizedBox(height: 24),
-                    if (viewModel.errorMessage != null)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Text(
-                          viewModel.errorMessage!,
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      ),
-                    ElevatedButton(
-                      onPressed: viewModel.isLoading ? null : () => _register(viewModel),
-                      child: viewModel.isLoading
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                    const SizedBox(height: 8),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: (_isUsernameChecked && _isUsernameAvailable)
+                          ? Column(
+                              key: const ValueKey('fields'),
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                const SizedBox(height: 16),
+                                TextFormField(
+                                  controller: _emailController,
+                                  style: const TextStyle(color: Colors.white),
+                                  decoration: InputDecoration(
+                                    labelText: emailLabel,
+                                    labelStyle: const TextStyle(color: Colors.white70),
+                                    enabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white24),
+                                    ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white),
+                                    ),
+                                  ),
+                                  keyboardType: TextInputType.emailAddress,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return requiredFieldMsg;
+                                    }
+                                    if (!value.contains('@')) {
+                                      return '올바른 이메일 형식이 아닙니다.';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 24),
+                                TextFormField(
+                                  controller: _passwordController,
+                                  style: const TextStyle(color: Colors.white),
+                                  obscureText: _obscurePassword,
+                                  decoration: InputDecoration(
+                                    labelText: passwordLabel,
+                                    labelStyle: const TextStyle(color: Colors.white70),
+                                    enabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white24),
+                                    ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white),
+                                    ),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                        color: Colors.white54,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscurePassword = !_obscurePassword;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return requiredFieldMsg;
+                                    }
+                                    if (value.length < 6) {
+                                      return '비밀번호는 6자 이상이어야 합니다.';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 24),
+                                TextFormField(
+                                  controller: _confirmPasswordController,
+                                  style: const TextStyle(color: Colors.white),
+                                  obscureText: _obscureConfirmPassword,
+                                  decoration: InputDecoration(
+                                    labelText: confirmPasswordLabel,
+                                    labelStyle: const TextStyle(color: Colors.white70),
+                                    enabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white24),
+                                    ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.white),
+                                    ),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                                        color: Colors.white54,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscureConfirmPassword = !_obscureConfirmPassword;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return requiredFieldMsg;
+                                    }
+                                    if (value != _passwordController.text) {
+                                      return passwordNotMatchMsg;
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 32),
+                                if (viewModel.errorMessage != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: Text(
+                                      viewModel.errorMessage!,
+                                      style: const TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                SizedBox(
+                                  height: 48,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Colors.black,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(24),
+                                      ),
+                                    ),
+                                    onPressed: viewModel.isLoading ? null : () => _register(viewModel),
+                                    child: viewModel.isLoading
+                                        ? const SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: CircularProgressIndicator(strokeWidth: 2),
+                                          )
+                                        : const Text(registerBtn, style: TextStyle(fontWeight: FontWeight.bold)),
+                                  ),
+                                ),
+                              ],
                             )
-                          : const Text(registerBtn),
+                          : const SizedBox.shrink(),
                     ),
                   ],
                 ),

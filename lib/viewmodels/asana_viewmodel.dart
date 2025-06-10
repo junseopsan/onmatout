@@ -59,10 +59,10 @@ class AsanaViewModel extends ChangeNotifier {
 
   void _applyFilters() {
     _filteredAsanas = _asanas.where((asana) {
-      final matchesSearch = asana.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          asana.sanskritName.toLowerCase().contains(_searchQuery.toLowerCase());
-      final matchesCategory = _selectedCategory.isEmpty || asana.category == _selectedCategory;
-      final matchesDifficulty = _selectedDifficulty.isEmpty || asana.difficulty.toString() == _selectedDifficulty;
+      final matchesSearch = asana.sanskritNameKr.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          asana.sanskritNameEn.toLowerCase().contains(_searchQuery.toLowerCase());
+      final matchesCategory = _selectedCategory.isEmpty || asana.categoryNameEn == _selectedCategory;
+      final matchesDifficulty = _selectedDifficulty.isEmpty || asana.level == _selectedDifficulty;
       return matchesSearch && matchesCategory && matchesDifficulty;
     }).toList();
     notifyListeners();

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:http/http.dart' as http;
 import '../../models/asana_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -46,18 +46,7 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
   Widget build(BuildContext context) {
     final imageUrls = getImageUrls();
     // 난이도 enum을 별 개수로 변환 (예시: 1~3)
-    int level = 1;
-    switch (widget.asana.difficulty.toString()) {
-      case 'ProficiencyLevel.beginner':
-        level = 1;
-        break;
-      case 'ProficiencyLevel.intermediate':
-        level = 2;
-        break;
-      case 'ProficiencyLevel.advanced':
-        level = 3;
-        break;
-    }
+    int level = int.tryParse(widget.asana.level) ?? 1;
 
     return FutureBuilder<List<String>>(
       future: getValidImageUrls(imageUrls),
@@ -71,16 +60,7 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 if (validUrls.isNotEmpty) ...[
-                  CarouselSlider(
-                    options: CarouselOptions(
-                      height: 260.0,
-                      enableInfiniteScroll: false,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          _current = index;
-                        });
-                      },
-                    ),
+                  FlutterCarousel(
                     items: validUrls.map((url) {
                       return Builder(
                         builder: (BuildContext context) {
@@ -105,6 +85,16 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
                         },
                       );
                     }).toList(),
+                    options: CarouselOptions(
+                      height: 300,
+                      viewportFraction: 1.0,
+                      enableInfiniteScroll: true,
+                      autoPlay: true,
+                      autoPlayInterval: const Duration(seconds: 3),
+                      autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                      enlargeCenterPage: true,
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -128,7 +118,7 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                 ),
                 Text(
-                  widget.asana.sanskritName,
+                  widget.asana.sanskritNameEn,
                   style: const TextStyle(fontSize: 16, color: Colors.grey),
                 ),
                 // 의미(해석) 박스
@@ -163,7 +153,7 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(widget.asana.category, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(widget.asana.categoryNameEn, style: const TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(width: 12),
                     ...List.generate(
                       level,
@@ -173,7 +163,7 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
                 ),
                 const SizedBox(height: 20),
                 // 효과/포인트
-                if (widget.asana.effects.isNotEmpty)
+                if (widget.asana.effect.isNotEmpty)
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),
@@ -183,7 +173,7 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      widget.asana.effects,
+                      widget.asana.effect,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),

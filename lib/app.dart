@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/home/home_screen.dart';
-import 'screens/class/class_tab.dart';
+import 'screens/asana/asana_screen.dart';
+import 'screens/record/record_screen.dart';
+import 'screens/studio/studio_screen.dart';
+import 'screens/profile/profile_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -21,7 +24,10 @@ class MyApp extends StatelessWidget {
         '/': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/home': (context) => const HomeScreen(),
-        '/class': (context) => const ClassTab(),
+        '/asana': (context) => const AsanaScreen(),
+        '/record': (context) => const RecordScreen(),
+        '/studio': (context) => const StudioScreen(),
+        '/profile': (context) => const ProfileScreen(),
       },
     );
   }

@@ -53,7 +53,15 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
       builder: (context, snapshot) {
         final validUrls = snapshot.data ?? [];
         return Scaffold(
-          appBar: AppBar(title: Text(widget.asana.sanskritNameKr)),
+          backgroundColor: const Color(0xFF1A1A1A),
+          appBar: AppBar(
+            backgroundColor: const Color(0xFF2A2A2A),
+            title: Text(
+              widget.asana.sanskritNameKr,
+              style: const TextStyle(color: Colors.white),
+            ),
+            iconTheme: const IconThemeData(color: Colors.white),
+          ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -71,10 +79,10 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
                               height: 220,
                               fit: BoxFit.contain,
                               placeholder: (context, url) => Shimmer.fromColors(
-                                baseColor: Colors.grey[300]!,
-                                highlightColor: Colors.grey[100]!,
+                                baseColor: Colors.grey[800]!,
+                                highlightColor: Colors.grey[700]!,
                                 child: Container(
-                                  color: Colors.grey[300],
+                                  color: Colors.grey[800],
                                   height: 220,
                                   width: double.infinity,
                                 ),
@@ -105,7 +113,7 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
                         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: _current == index ? Colors.red : Colors.grey[300],
+                          color: _current == index ? Colors.red : Colors.grey[600],
                         ),
                       );
                     }),
@@ -115,11 +123,18 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
                 // 이름, 카테고리, 레벨
                 Text(
                   widget.asana.sanskritNameKr,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                    color: Colors.white,
+                  ),
                 ),
                 Text(
                   widget.asana.sanskritNameEn,
-                  style: const TextStyle(fontSize: 16, color: Colors.grey),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
                 ),
                 // 의미(해석) 박스
                 if (widget.asana.asanaMeaning.trim().isNotEmpty)
@@ -127,7 +142,7 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
                     margin: const EdgeInsets.symmetric(vertical: 8),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.green[50],
+                      color: const Color(0xFF2A2A2A),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
@@ -141,7 +156,11 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
                                 .split('+')
                                 .map((s) => Text(
                                       s.trim(),
-                                      style: const TextStyle(fontSize: 15, color: Colors.green, fontWeight: FontWeight.w500),
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.greenAccent,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ))
                                 .toList(),
                           ),
@@ -153,7 +172,13 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(widget.asana.categoryNameEn, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(
+                      widget.asana.categoryNameEn,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
                     const SizedBox(width: 12),
                     ...List.generate(
                       level,
@@ -169,12 +194,15 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
                     padding: const EdgeInsets.all(12),
                     margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
-                      color: Colors.yellow[100],
+                      color: const Color(0xFF2A2A2A),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       widget.asana.effect,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
               ],

@@ -148,7 +148,13 @@ class _AsanaScreenState extends State<AsanaScreen> {
     }();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('아사나')),
+      backgroundColor: const Color(0xFF181A20),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF181A20),
+        elevation: 0,
+        title: const Text('아사나', style: TextStyle(color: Colors.white)),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
@@ -158,11 +164,26 @@ class _AsanaScreenState extends State<AsanaScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: TextField(
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: '아사나 이름(한글/영어) 검색',
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                  hintStyle: const TextStyle(color: Colors.white54),
+                  prefixIcon: const Icon(Icons.search, color: Colors.white54),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.white24),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.white24),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Colors.white),
+                  ),
+                  fillColor: const Color(0xFF23252B),
+                  filled: true,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                 ),
                 onChanged: (value) {
                   setState(() {
@@ -172,13 +193,15 @@ class _AsanaScreenState extends State<AsanaScreen> {
               ),
             ),
             // 1차 필터: 자세 유형
-            const Text('자세 유형', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text('자세 유형', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
             Wrap(
               spacing: 8,
               children: postures.map((posture) {
                 return ChoiceChip(
-                  label: Text(posture),
+                  label: Text(posture, style: TextStyle(color: _selectedPosture == posture ? Colors.black : Colors.white)),
                   selected: _selectedPosture == posture,
+                  selectedColor: Colors.white,
+                  backgroundColor: const Color(0xFF23252B),
                   onSelected: (_) {
                     setState(() {
                       _selectedPosture = posture;
@@ -191,13 +214,15 @@ class _AsanaScreenState extends State<AsanaScreen> {
             const SizedBox(height: 16),
             // 2차 필터: 동작 유형 (누운/선/앉은 자세에 대해서만 표시)
             if (['누운', '선', '앉은'].contains(_selectedPosture)) ...[
-              const Text('동작 유형', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text('동작 유형', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
               Wrap(
                 spacing: 8,
                 children: movementChips.map((movement) {
                   return ChoiceChip(
-                    label: Text(movement),
+                    label: Text(movement, style: TextStyle(color: _selectedMovement == movement ? Colors.black : Colors.white)),
                     selected: _selectedMovement == movement,
+                    selectedColor: Colors.white,
+                    backgroundColor: const Color(0xFF23252B),
                     onSelected: (_) {
                       setState(() {
                         _selectedMovement = movement;
@@ -224,7 +249,8 @@ class _AsanaScreenState extends State<AsanaScreen> {
                         final asana = filteredAsanas[idx];
                         final asanaId = (asana['id'] ?? '001').toString().padLeft(3, '0');
                         final asanaImageNumber = (asana['image_number'] ?? '001').toString().padLeft(3, '0');
-                        final thumbnailUrl = 'https://ueoytttgsjquapkaerwk.supabase.co/storage/v1/object/public/asanas-images/thumbnail/$asanaImageNumber.jpg';
+                        // final thumbnailUrl = 'https://ueoytttgsjquapkaerwk.supabase.co/storage/v1/object/public/asanas-images/thumbnail/$asanaImageNumber.jpg';
+                        final thumbnailUrl = 'https://ueoytttgsjquapkaerwk.supabase.co/storage/v1/object/public/asanas-images/thumbnail/0001.png';
                         return GestureDetector(
                           onTap: () {
                             final asanaModel = AsanaModel(
@@ -252,6 +278,7 @@ class _AsanaScreenState extends State<AsanaScreen> {
                             );
                           },
                           child: Card(
+                            color: const Color(0xFFF5F5F7).withOpacity(0.95),
                             elevation: 2,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                             child: Padding(
@@ -271,12 +298,12 @@ class _AsanaScreenState extends State<AsanaScreen> {
                                   const SizedBox(height: 8),
                                   Text(
                                     asana['sanskrit_name_kr'] ?? '',
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black),
                                     textAlign: TextAlign.center,
                                   ),
                                   Text(
                                     asana['sanskrit_name_en'] ?? '',
-                                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                    style: const TextStyle(fontSize: 12, color: Colors.black54),
                                     textAlign: TextAlign.center,
                                   ),
                                   const SizedBox(height: 4),

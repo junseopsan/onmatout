@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import '../../models/asana_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AsanaDetailScreen extends StatefulWidget {
   final AsanaModel asana;
@@ -23,6 +24,25 @@ class AsanaDetailScreen extends StatefulWidget {
 
 class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
   int _current = 0;
+  String? _categoryNameKo;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCategoryNameKo();
+  }
+
+  Future<void> _fetchCategoryNameKo() async {
+    final supabase = Supabase.instance.client;
+    final res = await supabase
+        .from('asanacategory')
+        .select('category_name_ko')
+        .eq('category_name_en', widget.asana.categoryNameEn)
+        .maybeSingle();
+    setState(() {
+      _categoryNameKo = res != null ? res['category_name_ko'] as String? : null;
+    });
+  }
 
   List<String> getImageUrls() {
     // 최대 5장까지 시도, 실제로 존재하지 않는 이미지는 errorBuilder에서 처리
@@ -68,56 +88,83 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 if (validUrls.isNotEmpty) ...[
-                  FlutterCarousel(
-                    items: validUrls.map((url) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: CachedNetworkImage(
-                              imageUrl: url,
-                              height: 220,
-                              fit: BoxFit.contain,
-                              placeholder: (context, url) => Shimmer.fromColors(
-                                baseColor: Colors.grey[800]!,
-                                highlightColor: Colors.grey[700]!,
-                                child: Container(
-                                  color: Colors.grey[800],
-                                  height: 220,
-                                  width: double.infinity,
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => const Icon(Icons.image_not_supported, size: 64, color: Colors.grey),
-                            ),
-                          );
-                        },
-                      );
-                    }).toList(),
-                    options: CarouselOptions(
-                      height: 300,
-                      viewportFraction: 1.0,
-                      enableInfiniteScroll: true,
-                      autoPlay: true,
-                      autoPlayInterval: const Duration(seconds: 3),
-                      autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                      autoPlayCurve: Curves.fastOutSlowIn,
-                      enlargeCenterPage: true,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(validUrls.length, (index) {
-                      return Container(
-                        width: 8,
-                        height: 8,
-                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _current == index ? Colors.red : Colors.grey[600],
+                  if (validUrls.length == 1) ...[
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: CachedNetworkImage(
+                        imageUrl: validUrls.first,
+                        height: 220,
+                        fit: BoxFit.contain,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: Colors.grey[800]!,
+                          highlightColor: Colors.grey[700]!,
+                          child: Container(
+                            color: Colors.grey[800],
+                            height: 220,
+                            width: double.infinity,
+                          ),
                         ),
-                      );
-                    }),
-                  ),
+                        errorWidget: (context, url, error) => const Icon(Icons.image_not_supported, size: 64, color: Colors.grey),
+                      ),
+                    ),
+                  ] else ...[
+                    FlutterCarousel(
+                      items: validUrls.map((url) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: CachedNetworkImage(
+                                imageUrl: url,
+                                height: 220,
+                                fit: BoxFit.contain,
+                                placeholder: (context, url) => Shimmer.fromColors(
+                                  baseColor: Colors.grey[800]!,
+                                  highlightColor: Colors.grey[700]!,
+                                  child: Container(
+                                    color: Colors.grey[800],
+                                    height: 220,
+                                    width: double.infinity,
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) => const Icon(Icons.image_not_supported, size: 64, color: Colors.grey),
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                      options: CarouselOptions(
+                        height: 300,
+                        viewportFraction: 1.0,
+                        enableInfiniteScroll: true,
+                        autoPlay: true,
+                        autoPlayInterval: const Duration(seconds: 3),
+                        autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enlargeCenterPage: true,
+                        showIndicator: false,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            _current = index;
+                          });
+                        },
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(validUrls.length, (index) {
+                        return Container(
+                          width: 8,
+                          height: 8,
+                          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _current == index ? Colors.red : Colors.grey[600],
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
                 ],
                 const SizedBox(height: 20),
                 // 이름, 카테고리, 레벨
@@ -173,7 +220,7 @@ class _AsanaDetailScreenState extends State<AsanaDetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      widget.asana.categoryNameEn,
+                      _categoryNameKo ?? widget.asana.categoryNameEn,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,

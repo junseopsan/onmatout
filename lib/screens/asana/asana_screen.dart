@@ -23,29 +23,6 @@ class _AsanaScreenState extends State<AsanaScreen> {
   // 자세 유형 목록 (데이터 로드 후 업데이트)
   List<String> _postures = ['전체'];
 
-  // 카테고리 영문-한글 매핑 테이블
-  static const Map<String, String> categoryNameKoMap = {
-    'Standing Neutral Pose': '선 중립 자세',
-    'Standing Side bend Pose': '선 기울기 자세',
-    'Seated Inversion Pose': '앉은 역자세',
-    'Standing Inversion Pose': '선 역자세',
-    'Standing Backbend Pose': '선 후굴 자세',
-    'Seated Forward bend Pose': '앉은 전굴 자세',
-    'Supine Forward bend Pose': '누운 전굴 자세',
-    'Supine Side bend Pose': '누운 기울기 자세',
-    'Standing Compression Pose': '선 응축 자세',
-    'Standing Twist Pose': '선 비틀기 자세',
-    'Seated Side bend Pose': '앉은 기울기 자세',
-    'Seated Compression Pose': '앉은 응축 자세',
-    'Supine Twist Pose': '누운 비틀기 자세',
-    'Seated Twist Pose': '앉은 비틀기 자세',
-    'Supine Backbend Pose': '누운 후굴 자세',
-    'Seated Backbend Pose': '앉은 후굴 자세',
-    'Supine Compression Pose': '누운 응축 자세',
-    'Standing Forward bend Pose': '선 전굴 자세',
-    'Supine Inversion Pose': '누운 역자세',
-  };
-
   @override
   void initState() {
     super.initState();
